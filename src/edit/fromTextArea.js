@@ -38,13 +38,6 @@ export function fromTextArea(textarea, options) {
     }
   }
 
-  // CodeMirror.fromTextArea() by default overrides the undocumented options.finishInit
-  // callback function. This modification allows options.finishInit to work again
-  // by creating a copy of the callback and running it again.
-  let _finishInit
-  if (typeof options.finishInit === 'function') {
-    _finishInit = options.finishInit
-  }
   options.finishInit = cm => {
     cm.save = save
     cm.getTextArea = () => textarea
@@ -58,9 +51,6 @@ export function fromTextArea(textarea, options) {
         if (typeof textarea.form.submit == "function")
           textarea.form.submit = realSubmit
       }
-    }
-    if (typeof _finishInit === 'function') {
-      _finishInit(cm)
     }
   }
 
