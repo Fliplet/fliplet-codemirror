@@ -10,7 +10,7 @@
   CodeMirror.extendMode("css", {
     commentStart: "/*",
     commentEnd: "*/",
-    newlineAfterToken: function(_type, content) {
+    newlineAfterToken: function(type, content) {
       return /^[;{}]$/.test(content);
     }
   });
@@ -19,7 +19,7 @@
     commentStart: "/*",
     commentEnd: "*/",
     // FIXME semicolons inside of for
-    newlineAfterToken: function(_type, content, textAfter, state) {
+    newlineAfterToken: function(type, content, textAfter, state) {
       if (this.jsonMode) {
         return /^[\[,{]$/.test(content) || /^}/.test(textAfter);
       } else {
@@ -29,17 +29,11 @@
     }
   });
 
-  var inlineElements = /^(a|abbr|acronym|area|base|bdo|big|br|button|caption|cite|code|col|colgroup|dd|del|dfn|em|frame|hr|iframe|img|input|ins|kbd|label|legend|link|map|object|optgroup|option|param|q|samp|script|select|small|span|strong|sub|sup|textarea|tt|var)$/;
-
   CodeMirror.extendMode("xml", {
     commentStart: "<!--",
     commentEnd: "-->",
-    newlineAfterToken: function(type, content, textAfter, state) {
-      var inline = false;
-      if (this.configuration == "html")
-        inline = state.context ? inlineElements.test(state.context.tagName) : false;
-      return !inline && ((type == "tag" && />$/.test(content) && state.context) ||
-                         /^</.test(textAfter));
+    newlineAfterToken: function(type, content, textAfter) {
+      return type == "tag" && />$/.test(content) || /^</.test(textAfter);
     }
   });
 
@@ -108,7 +102,7 @@
           newline();
       }
       if (!stream.pos && outer.blankLine) outer.blankLine(state);
-      if (!atSol && i < text.length - 1) newline();
+      if (!atSol) newline();
     }
 
     cm.operation(function () {
